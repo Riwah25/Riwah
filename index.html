@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>Happy Birthday Riwah</title>
+  <meta name="theme-color" content="#1a0a14">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  
+  <style>
+    :root {
+      --pink: #ec4899;
+      --soft-pink: #f9a8d4;
+      --light-pink: #fce7f3;
+      --rose: #be185d;
+      --dark: #1a0a14;
+      --card: #2a1525;
+      --text: #fdf2f8;
+      --muted: #fbcfe8;
+      --gold: #fbbf24;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(160deg, #1a0a14 0%, #2d1525 45%, #1a0a14 100%);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 50% 15%, rgba(236,72,153,0.18), transparent 55%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px 20px 80px;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* ========== HERO SLIDER (ONLY IMAGES) ========== */
+    .hero {
+      position: relative;
+      width: 100%;
+      height: 78vh;
+      min-height: 420px;
+      max-height: 720px;
+      overflow: hidden;
+      border-radius: 0 0 28px 28px;
+      margin-bottom: 10px;
+    }
+    .hero-slider {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 1.1s ease-in-out;
+      z-index: 1;
+    }
+    .slide.active {
+      opacity: 1;
+      z-index: 2;
+    }
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+      filter: brightness(0.72) contrast(1.05) saturate(1.1);
+    }
+    .slide::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(26,10,20,0.45) 0%,
+        rgba(26,10,20,0.15) 35%,
+        rgba(26,10,20,0.35) 70%,
+        rgba(26,10,20,0.75) 100%
+      );
+      pointer-events: none;
+    }
+    .hero-content {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+      pointer-events: none;
+    }
+    .hero-content h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.6rem, 9vw, 4.6rem);
+      font-weight: 700;
+      background: linear-gradient(90deg, #f9a8d4, #ec4899, #fbbf24, #f9a8d4);
+      background-size: 250% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: shine 7s linear infinite;
+      line-height: 1.15;
+      margin-bottom: 6px;
+      text-shadow: 0 4px 30px rgba(0,0,0,0.4);
+    }
+    @keyframes shine {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 250% 50%; }
+    }
+    .hero-content .subtitle {
+      font-size: clamp(1.05rem, 3vw, 1.3rem);
+      color: #fce7f3;
+      font-weight: 400;
+      margin-top: 4px;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.5);
+    }
+    .hero-content .date {
+      font-size: 0.95rem;
+      color: var(--gold);
+      letter-spacing: 2.5px;
+      margin-top: 14px;
+      font-weight: 500;
+      text-transform: uppercase;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+
+    /* MUSIC PLAYER */
+    .music-section {
+      margin: 30px auto 50px;
+      max-width: 480px;
+      background: linear-gradient(135deg, rgba(42, 21, 37, 0.9), rgba(60, 25, 50, 0.85));
+      border: 1.5px solid rgba(236, 72, 153, 0.4);
+      border-radius: 20px;
+      padding: 24px 28px;
+      text-align: center;
+      box-shadow: 0 12px 30px rgba(236, 72, 153, 0.15);
+      backdrop-filter: blur(14px);
+    }
+    .music-icon { font-size: 2.2rem; margin-bottom: 8px; }
+    .music-title { font-size: 1.15rem; font-weight: 600; color: var(--soft-pink); margin-bottom: 4px; }
+    .music-sub { font-size: 0.85rem; color: var(--muted); margin-bottom: 16px; }
+    .music-section audio { width: 100%; height: 42px; border-radius: 10px; outline: none; }
+    .music-hint { margin-top: 10px; font-size: 0.78rem; color: rgba(249, 168, 212, 0.7); }
+
+    /* GREETING */
+    .greeting {
+      margin: 50px auto;
+      max-width: 720px;
+      padding: 40px 32px;
+      background: rgba(42, 21, 37, 0.65);
+      border-radius: 20px;
+      border: 1px solid rgba(236, 72, 153, 0.3);
+      backdrop-filter: blur(14px);
+    }
+    .greeting h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 4vw, 2rem);
+      color: var(--soft-pink);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .greeting p {
+      font-size: clamp(1rem, 2.5vw, 1.15rem);
+      color: #fce7f3;
+      margin-bottom: 16px;
+      line-height: 1.8;
+    }
+
+    /* SECTION TITLE */
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.7rem, 5vw, 2.4rem);
+      color: #fce7f3;
+      text-align: center;
+      margin-bottom: 36px;
+      position: relative;
+    }
+    .section-title::after {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, #f9a8d4, #ec4899);
+      margin: 12px auto 0;
+      border-radius: 2px;
+    }
+
+    /* WISHES */
+    .wishes { margin: 70px auto 60px; }
+    .wishes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+    }
+    .wish-card {
+      background: rgba(42, 21, 37, 0.7);
+      padding: 24px 20px;
+      border-radius: 16px;
+      border: 1px solid rgba(249, 168, 212, 0.18);
+      transition: transform 0.25s ease, border-color 0.25s ease;
+    }
+    .wish-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(236, 72, 153, 0.5);
+    }
+    .wish-card .icon { font-size: 1.7rem; margin-bottom: 10px; }
+    .wish-card h3 { font-size: 1.1rem; font-weight: 600; color: var(--soft-pink); margin-bottom: 8px; }
+    .wish-card p { font-size: 0.93rem; color: var(--muted); line-height: 1.55; }
+
+    /* LONG WISH LIST */
+    .wish-list-section { margin: 80px auto 60px; max-width: 720px; }
+    .wish-list {
+      background: rgba(42, 21, 37, 0.6);
+      border-radius: 18px;
+      padding: 32px 28px;
+      border: 1px solid rgba(236, 72, 153, 0.25);
+    }
+    .wish-list h3 { font-size: 1.3rem; color: var(--soft-pink); margin-bottom: 20px; text-align: center; }
+    .wish-list ul { list-style: none; padding: 0; }
+    .wish-list li {
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(249, 168, 212, 0.12);
+      font-size: 1.02rem;
+      color: #fce7f3;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .wish-list li:last-child { border-bottom: none; }
+    .wish-list li span { color: var(--pink); font-size: 1.1rem; }
+
+    /* MILESTONES */
+    .milestones { margin: 80px auto 60px; max-width: 700px; }
+    .milestone {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 28px;
+      align-items: flex-start;
+    }
+    .milestone-year {
+      min-width: 80px;
+      font-weight: 600;
+      color: var(--gold);
+      font-size: 1.05rem;
+      padding-top: 4px;
+    }
+    .milestone-content {
+      background: rgba(42, 21, 37, 0.65);
+      padding: 18px 22px;
+      border-radius: 12px;
+      border-left: 3px solid var(--pink);
+      flex: 1;
+    }
+    .milestone-content h4 { font-size: 1.1rem; color: #fce7f3; margin-bottom: 6px; }
+    .milestone-content p { font-size: 0.95rem; color: var(--muted); }
+
+    /* QUOTES */
+    .quotes { margin: 80px auto 60px; max-width: 700px; }
+    .quote-card {
+      background: rgba(42, 21, 37, 0.65);
+      padding: 28px 26px;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      border: 1px solid rgba(249, 168, 212, 0.2);
+      text-align: center;
+    }
+    .quote-card p { font-size: 1.1rem; color: #fce7f3; font-style: italic; line-height: 1.7; }
+    .quote-card .author { margin-top: 12px; font-size: 0.9rem; color: var(--soft-pink); }
+
+    /* ========== GALLERY (NOW VIDEOS) ========== */
+    .gallery { margin: 80px 0 60px; }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 22px;
+    }
+    .photo-card {
+      background: #2a1525;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+      transition: transform 0.3s ease;
+      border: 1px solid rgba(249, 168, 212, 0.15);
+    }
+    .photo-card:hover { transform: translateY(-6px); }
+    .photo-card video {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+      display: block;
+      background: #1a0a14;
+    }
+    .photo-card .caption {
+      padding: 14px 16px;
+      font-size: 0.95rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* ========== NEW MEDIA SECTION ========== */
+    .media-section {
+      margin: 80px 0 60px;
+    }
+    .media-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+    }
+    .media-item {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #2a1525;
+      border: 1px solid rgba(249, 168, 212, 0.18);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      aspect-ratio: 4/5;
+    }
+    .media-item img,
+    .media-item video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .media-item video {
+      background: #1a0a14;
+    }
+
+    /* EXTRA WISHES */
+    .extra-wishes { margin: 80px auto 60px; max-width: 720px; }
+    .extra-wish {
+      background: rgba(42, 21, 37, 0.6);
+      padding: 20px 24px;
+      border-radius: 14px;
+      margin-bottom: 16px;
+      border-left: 4px solid var(--pink);
+      font-size: 1.05rem;
+      color: #fce7f3;
+      line-height: 1.6;
+    }
+
+    /* CAKE */
+    .cake-section {
+      margin: 80px auto 60px;
+      text-align: center;
+      max-width: 480px;
+    }
+    .cake {
+      font-size: clamp(4rem, 16vw, 6rem);
+      margin: 16px 0;
+      filter: drop-shadow(0 8px 16px rgba(236, 72, 153, 0.35));
+    }
+    .cake-text {
+      font-size: clamp(1.15rem, 3vw, 1.35rem);
+      color: #fce7f3;
+      margin-top: 8px;
+    }
+
+    /* CLOSING */
+    .closing {
+      margin: 80px auto 50px;
+      max-width: 640px;
+      padding: 40px 30px;
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.15), rgba(249, 168, 212, 0.08));
+      border-radius: 18px;
+      border: 1px solid rgba(236, 72, 153, 0.3);
+      text-align: center;
+    }
+    .closing p {
+      font-size: clamp(1.05rem, 2.8vw, 1.2rem);
+      color: #fce7f3;
+      line-height: 1.8;
+    }
+
+    footer {
+      margin: 60px 0 40px;
+      text-align: center;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 640px) {
+      .container { padding: 16px 14px 50px; }
+      .hero {
+        height: 62vh;
+        min-height: 360px;
+        border-radius: 0 0 20px 20px;
+      }
+      .greeting { padding: 28px 20px; }
+      .music-section { padding: 20px 18px; }
+      .milestone { flex-direction: column; gap: 8px; }
+      .milestone-year { min-width: auto; }
+      .gallery-grid { grid-template-columns: 1fr; }
+      .media-grid { grid-template-columns: 1fr; }
+      .wish-list { padding: 24px 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========== HERO SLIDER – ONLY IMAGES ========== -->
+  <section class="hero">
+    <div class="hero-slider" id="heroSlider">
+      <div class="slide active">
+        <img src="!1.jpg" alt="Birthday Memory">
+      </div>
+      <div class="slide">
+        <img src="1.jpg" alt="Birthday Memory">
+      </div>
+      <div class="slide">
+        <img src="2.jpg" alt="Birthday Memory">
+      </div>
+      <div class="slide">
+        <img src="3.jpg" alt="Birthday Memory">
+      </div>
+      <div class="slide">
+        <img src="4.jpg" alt="Birthday Memory">
+      </div>
+      <div class="slide">
+        <img src="5.jpg" alt="Birthday Memory">
+      </div>
+      <div class="slide">
+        <img src="6.jpg" alt="Birthday Memory">
+      </div>
+      <div class="slide">
+        <img src="7.jpg" alt="Birthday Memory">
+      </div>
+    </div>
+
+    <div class="hero-content">
+      <h1>Happy Birthday</h1>
+      <h1>Riwah</h1>
+      <p class="subtitle">Wishing you a wonderful year ahead</p>
+      <p class="date">25 December 2009</p>
+    </div>
+  </section>
+
+  <div class="container">
+
+    <!-- MUSIC -->
+    <div class="music-section">
+      <div class="music-icon">🎂</div>
+      <div class="music-title">Birthday Song</div>
+      <div class="music-sub">Play the song & enjoy the celebration</div>
+      <audio controls autoplay loop>
+        <source src="happybirthday.mp3" type="audio/mpeg">
+      </audio>
+      <div class="music-hint">click and play enjoy the celebration</div>
+    </div>
+
+    <!-- GREETING -->
+    <div class="greeting">
+      <h2>A Special Message</h2>
+      <p>Dear Riwah,</p>
+      <p>On this special day, I want to extend my warmest wishes for your birthday. May the year ahead bring you success, good health, peace of mind, and many moments of joy.</p>
+      <p>Your kindness, positive spirit and hard work continue to inspire everyone around you. May this birthday mark the beginning of new opportunities and beautiful experiences.</p>
+      <p>Wishing you continued growth, happiness, and everything you set your heart on.</p>
+      <p style="margin-top: 24px; text-align: right; color: var(--soft-pink); font-weight: 500;">— With best regards</p>
+    </div>
+
+    <!-- WISHES -->
+    <div class="wishes">
+      <h2 class="section-title">Birthday Wishes For You</h2>
+      <div class="wishes-grid">
+        <div class="wish-card"><div class="icon">🌟</div><h3>Success</h3><p>May every goal you pursue this year turn into a meaningful achievement.</p></div>
+        <div class="wish-card"><div class="icon">🌿</div><h3>Health & Peace</h3><p>Wishing you good health, calm days, and a peaceful mind throughout the year.</p></div>
+        <div class="wish-card"><div class="icon">🚀</div><h3>Growth</h3><p>May this year open new doors of learning, progress, and personal development.</p></div>
+        <div class="wish-card"><div class="icon">✨</div><h3>Joy</h3><p>May your days be filled with genuine happiness and cherished moments.</p></div>
+        <div class="wish-card"><div class="icon">💪</div><h3>Strength</h3><p>May you always find the strength to overcome any challenge that comes your way.</p></div>
+        <div class="wish-card"><div class="icon">🌈</div><h3>Hope</h3><p>May every sunrise bring you fresh hope and positive energy.</p></div>
+        <div class="wish-card"><div class="icon">📚</div><h3>Wisdom</h3><p>May you gain valuable knowledge and make wise decisions this year.</p></div>
+        <div class="wish-card"><div class="icon">🎯</div><h3>Focus</h3><p>May you stay focused on your dreams and achieve them one by one.</p></div>
+        <div class="wish-card"><div class="icon">🌸</div><h3>Beauty</h3><p>May life show you its most beautiful sides this year.</p></div>
+        <div class="wish-card"><div class="icon">🕊️</div><h3>Calm</h3><p>May your heart always remain peaceful and free from worry.</p></div>
+        <div class="wish-card"><div class="icon">🔥</div><h3>Passion</h3><p>May you stay passionate about the things that make you happy.</p></div>
+        <div class="wish-card"><div class="icon">🎁</div><h3>Surprises</h3><p>May this year bring many pleasant surprises and unexpected joys.</p></div>
+      </div>
+    </div>
+
+    <!-- LONG WISH LIST -->
+    <div class="wish-list-section">
+      <h2 class="section-title">More Heartfelt Wishes</h2>
+      <div class="wish-list">
+        <h3>From the heart…</h3>
+        <ul>
+          <li><span>✦</span> May your smile never fade and your laughter never stop.</li>
+          <li><span>✦</span> May you always find reasons to be grateful every single day.</li>
+          <li><span>✦</span> May your hard work be rewarded in the most beautiful ways.</li>
+          <li><span>✦</span> May you attract only good people and positive energy.</li>
+          <li><span>✦</span> May every challenge turn into a valuable life lesson.</li>
+          <li><span>✦</span> May your dreams keep growing bigger and brighter.</li>
+          <li><span>✦</span> May you always feel loved, supported and appreciated.</li>
+          <li><span>✦</span> May this year bring you closer to the life you truly desire.</li>
+          <li><span>✦</span> May your confidence keep rising with every passing day.</li>
+          <li><span>✦</span> May you create beautiful memories that last a lifetime.</li>
+          <li><span>✦</span> May your heart stay kind and your mind stay strong.</li>
+          <li><span>✦</span> May you never lose the spark that makes you unique.</li>
+          <li><span>✦</span> May every door of opportunity open for you this year.</li>
+          <li><span>✦</span> May you find joy in both big achievements and small moments.</li>
+          <li><span>✦</span> May your journey ahead be smooth, bright and fulfilling.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- MILESTONES -->
+    <div class="milestones">
+      <h2 class="section-title">Looking Ahead</h2>
+      <div class="milestone">
+        <div class="milestone-year">2025</div>
+        <div class="milestone-content">
+          <h4>A Year of New Beginnings</h4>
+          <p>May this birthday year bring fresh opportunities and positive changes in every area of life.</p>
+        </div>
+      </div>
+      <div class="milestone">
+        <div class="milestone-year">Goals</div>
+        <div class="milestone-content">
+          <h4>Clear Direction</h4>
+          <p>Set meaningful targets and work steadily toward them with focus and determination.</p>
+        </div>
+      </div>
+      <div class="milestone">
+        <div class="milestone-year">Health</div>
+        <div class="milestone-content">
+          <h4>Strong Body & Mind</h4>
+          <p>May you stay healthy, energetic and mentally strong throughout the year.</p>
+        </div>
+      </div>
+      <div class="milestone">
+        <div class="milestone-year">Future</div>
+        <div class="milestone-content">
+          <h4>Bright Horizons</h4>
+          <p>May the path ahead be filled with growth, meaningful connections, and lasting fulfillment.</p>
+        </div>
+      </div>
+      <div class="milestone">
+        <div class="milestone-year">Happiness</div>
+        <div class="milestone-content">
+          <h4>Daily Joy</h4>
+          <p>May happiness find you in unexpected places and stay with you always.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUOTES -->
+    <div class="quotes">
+      <h2 class="section-title">Words To Inspire</h2>
+      <div class="quote-card">
+        <p>“The best is yet to come. Keep believing in yourself.”</p>
+        <div class="author">— Birthday Wish</div>
+      </div>
+      <div class="quote-card">
+        <p>“Age is just a number. Your spirit is what truly matters.”</p>
+        <div class="author">— Birthday Thought</div>
+      </div>
+      <div class="quote-card">
+        <p>“May your life be filled with endless possibilities and beautiful moments.”</p>
+        <div class="author">— Warm Wishes</div>
+      </div>
+      <div class="quote-card">
+        <p>“Another year older, another year wiser, another year stronger.”</p>
+        <div class="author">— Celebration Note</div>
+      </div>
+    </div>
+
+    <!-- ========== GALLERY – NOW ALL VIDEOS ========== -->
+    <div class="gallery">
+      <h2 class="section-title">Special Moments</h2>
+      <div class="gallery-grid">
+
+        <div class="photo-card">
+          <video muted loop playsinline autoplay>
+            <source src="b1.mp4" type="video/mp4">
+          </video>
+          <div class="caption">Beautiful moments</div>
+        </div>
+
+        <div class="photo-card">
+          <video muted loop playsinline autoplay>
+            <source src="b2.mp4" type="video/mp4">
+          </video>
+          <div class="caption">Happy times</div>
+        </div>
+
+        <div class="photo-card">
+          <video muted loop playsinline autoplay>
+            <source src="b3.mp4" type="video/mp4">
+          </video>
+          <div class="caption">Special day</div>
+        </div>
+
+        <!-- <div class="photo-card">
+          <video muted loop playsinline autoplay>
+            <source src="b4.mp4" type="video/mp4">
+          </video>
+          <div class="caption">Cherished memories</div>
+        </div> -->
+
+        <div class="photo-card">
+          <video muted loop playsinline autoplay>
+            <source src="b5.mp4" type="video/mp4">
+          </video>
+          <div class="caption">Smile more</div>
+        </div>
+
+        <div class="photo-card">
+          <video muted loop playsinline autoplay>
+            <source src="b6.mp4" type="video/mp4">
+          </video>
+          <div class="caption">Celebrate life</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ========== NEW SECTION: VIDEOS + PICS ========== -->
+    <div class="media-section">
+      <h2 class="section-title">More Memories</h2>
+      <div class="media-grid">
+
+        <div class="media-item">
+          <video muted loop playsinline autoplay>
+            <source src="v1.mp4" type="video/mp4">
+          </video>
+        </div>
+
+        <div class="media-item">
+          <img src="8.jpg" alt="Memory" loading="lazy">
+        </div>
+
+        <div class="media-item">
+          <video muted loop playsinline autoplay>
+            <source src="v2.mp4" type="video/mp4">
+          </video>
+        </div>
+
+        <div class="media-item">
+          <img src="9.png" alt="Memory" loading="lazy">
+        </div>
+
+        <div class="media-item">
+          <video muted loop playsinline autoplay>
+            <source src="v3.mp4" type="video/mp4">
+          </video>
+        </div>
+
+        <div class="media-item">
+          <img src="10.jpg" alt="Memory" loading="lazy">
+        </div>
+
+        <div class="media-item">
+          <img src="11.jpg" alt="Memory" loading="lazy">
+        </div>
+
+        <div class="media-item">
+          <video muted loop playsinline autoplay>
+            <source src="v4.mp4" type="video/mp4">
+          </video>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- EXTRA WISHES -->
+    <div class="extra-wishes">
+      <h2 class="section-title">Even More Wishes</h2>
+      <div class="extra-wish">May your birthday be the start of a year filled with good luck and great people.</div>
+      <div class="extra-wish">May you always have the courage to chase what your heart desires.</div>
+      <div class="extra-wish">May every day of this new year bring you one step closer to your biggest dreams.</div>
+      <div class="extra-wish">May you stay surrounded by people who uplift and support you.</div>
+      <div class="extra-wish">May your life be as sweet and beautiful as a perfect birthday cake.</div>
+      <div class="extra-wish">May you never stop growing, learning, and becoming a better version of yourself.</div>
+      <div class="extra-wish">May this year gift you unforgettable experiences and genuine friendships.</div>
+      <div class="extra-wish">May your heart stay light and your path stay clear.</div>
+      <div class="extra-wish">May success follow you in everything you decide to do.</div>
+      <div class="extra-wish">May you feel proud of how far you’ve come and excited for what’s next.</div>
+    </div>
+
+    <!-- CAKE -->
+    <div class="cake-section">
+      <h2 class="section-title">Make a Wish</h2>
+      <div class="cake">🎂</div>
+      <p class="cake-text">Happy Birthday, Riwah<br>May all your wishes come true</p>
+    </div>
+
+    <!-- CLOSING -->
+    <div class="closing">
+      <p>
+        Once again, wishing you a very Happy Birthday.<br>
+        May this year be kind, productive, and full of reasons to smile.<br><br>
+        Enjoy your special day to the fullest!
+      </p>
+    </div>
+
+    <footer>
+      For you Riwah • 25 December 2009
+    </footer>
+  </div>
+
+  <script>
+    // Hero slider – only images, faster
+    const slides = document.querySelectorAll('.slide');
+    let current = 0;
+    let interval;
+
+    function goToSlide(index) {
+      slides[current].classList.remove('active');
+      current = index;
+      slides[current].classList.add('active');
+    }
+
+    function nextSlide() {
+      goToSlide((current + 1) % slides.length);
+    }
+
+    function startSlider() {
+      interval = setInterval(nextSlide, 2800);
+    }
+
+    goToSlide(0);
+    startSlider();
+
+    // Confetti
+    window.addEventListener('load', () => {
+      confetti({
+        particleCount: 120,
+        spread: 90,
+        origin: { y: 0.55 },
+        colors: ['#ec4899', '#f9a8d4', '#fbbf24', '#be185d', '#fce7f3']
+      });
+    });
+  </script>
+</body>
+</html>
